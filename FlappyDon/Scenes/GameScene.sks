@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder.SpriteKit.Scene" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" sceneName="GameScene" sceneScaleMode="0">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+    </dependencies>
+    <scenes>
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <node name="GameScene" id="gSM-SH-k1r" userLabel="GameScene" customClass="GameScene" customModule="FlappyDon" customModuleProvider="target">
+                    <position key="position" x="0.0" y="0.0"/>
+                </node>
+            </objects>
+        </scene>
+    </scenes>
+</document>
