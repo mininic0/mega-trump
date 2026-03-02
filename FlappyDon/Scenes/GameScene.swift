@@ -16,6 +16,8 @@ class GameScene: SKScene {
     private var ceilingNode: SKNode?
     private var trumpNode: TrumpNode?
     private let gameManager = GameManager.shared
+    private let backgroundManager = BackgroundManager()
+    private var lastUpdateTime: TimeInterval = 0
     
     override func didMove(to view: SKView) {
         setupPhysics()
@@ -31,6 +33,7 @@ class GameScene: SKScene {
     
     private func setupBackground() {
         backgroundColor = SKColor(red: 0.53, green: 0.81, blue: 0.92, alpha: 1.0)
+        backgroundManager.setup(in: self)
     }
     
     func gameOver() {
@@ -71,6 +74,7 @@ class GameScene: SKScene {
         guard gameManager.isGameActive else {
             if gameManager.currentState == .menu || gameManager.currentState == .gameOver {
                 gameManager.startGame()
+                backgroundManager.startScrolling()
             }
             return
         }
@@ -82,7 +86,23 @@ class GameScene: SKScene {
         trumpNode?.flap()
     }
     
+    func resetGame() {
+        backgroundManager.reset()
+        gameManager.resetGame()
+        lastUpdateTime = 0
+    }
+    
     override func update(_ currentTime: TimeInterval) {
+        // Calculate delta time
+        if lastUpdateTime == 0 {
+            lastUpdateTime = currentTime
+        }
+        let deltaTime = currentTime - lastUpdateTime
+        lastUpdateTime = currentTime
+        
+        // Update background scrolling
+        backgroundManager.update(deltaTime: deltaTime)
+        
         guard gameManager.isGameActive else { return }
         
         checkBounds()
@@ -118,6 +138,7 @@ extension GameScene: SKPhysicsContactDelegate {
         guard gameManager.isGameActive else { return }
         trumpNode?.die()
         gameManager.endGame()
+        backgroundManager.stopScrolling()
     }
     
     private func handleScoreTrigger(contact: SKPhysicsContact) {
