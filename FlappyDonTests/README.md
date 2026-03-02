@@ -10,6 +10,9 @@ FlappyDonTests/
 │   └── GameManagerTests.swift      # 26 unit tests for GameManager
 ├── Scenes/
 │   └── GameSceneTests.swift        # 23 unit tests + 4 integration tests
+├── Nodes/
+│   ├── TrumpNodeTests.swift        # 40 unit tests for TrumpNode
+│   └── TrumpNodeIntegrationTests.swift  # 18 integration tests for TrumpNode
 ├── Info.plist                      # Test bundle configuration
 └── README.md                       # This file
 ```
@@ -91,6 +94,77 @@ FlappyDonTests/
 - `testSceneAndManagerIntegration` - Scene and GameManager coordination
 - `testPhysicsAndBoundariesIntegration` - Physics world and boundaries working together
 
+### TrumpNodeTests.swift (40 unit tests)
+
+**Initialization Tests (3 tests):**
+- `testInitialization` - Proper initialization with correct state, name, z-position
+- `testInitialSize` - 80x80 point size validation
+- `testFlapForceDefaultValue` - Default flap force of 350.0
+
+**Physics Body Tests (11 tests):**
+- `testPhysicsBodyExists` - Physics body creation
+- `testPhysicsBodyIsCircular` - Circular shape with 85% radius (forgiving hitbox)
+- `testPhysicsBodyCategoryBitMask` - Trump category bit mask
+- `testPhysicsBodyContactTestBitMask` - Contact detection configuration
+- `testPhysicsBodyCollisionBitMask` - Collision configuration
+- `testPhysicsBodyIsDynamic` - Dynamic physics body
+- `testPhysicsBodyAllowsRotation` - Rotation enabled
+- `testPhysicsBodyRestitution` - Zero restitution (no bounce)
+- `testPhysicsBodyFriction` - Zero friction
+- `testPhysicsBodyLinearDamping` - Air resistance (0.5)
+- `testPhysicsBodyMass` - Mass configuration
+
+**State Transition Tests (5 tests):**
+- `testInitialStateIsIdle` - Initial state verification
+- `testStateTransitionToFlapping` - Flap state transition
+- `testStateTransitionToDead` - Death state transition
+- `testStateTransitionToCelebrating` - Celebrate state transition
+- `testResetReturnsToIdle` - Reset to idle state
+
+**Flap Mechanic Tests (5 tests):**
+- `testFlapResetsVerticalVelocity` - Velocity reset before impulse
+- `testFlapAppliesUpwardImpulse` - Upward impulse application
+- `testFlapDoesNotWorkWhenDead` - Dead state prevents flapping
+- `testFlapRotatesSpriteUpward` - Visual feedback rotation
+- `testCustomFlapForce` - Custom flap force support
+
+**Death, Celebrate, Reset, Rotation, and Animation Tests (16 tests):**
+- Death behavior (3 tests)
+- Celebrate behavior (2 tests)
+- Reset behavior (4 tests)
+- Rotation update (5 tests)
+- Animation lifecycle (2 tests)
+
+### TrumpNodeIntegrationTests.swift (18 integration tests)
+
+**Scene Integration Tests (3 tests):**
+- `testTrumpNodeExistsInScene` - Trump added to GameScene
+- `testTrumpNodeInitialPosition` - Left-center positioning
+- `testTrumpNodeZPosition` - Z-position layering
+
+**Physics Integration Tests (4 tests):**
+- `testTrumpNodePhysicsInSceneWorld` - Physics world integration
+- `testTrumpNodeAffectedByGravity` - Gravity simulation
+- `testTrumpNodeFlapInPhysicsWorld` - Flap in physics simulation
+- `testTrumpNodePhysicsCategoryMatchesScene` - Category consistency
+
+**Collision Integration Tests (3 tests):**
+- `testTrumpNodeCollidesWithGround` - Ground collision
+- `testTrumpNodeCollidesWithCeiling` - Ceiling collision
+- `testTrumpNodeContactsWithScore` - Score trigger contact
+
+**Game State Integration Tests (3 tests):**
+- `testTrumpNodeFlapStartsGame` - Tap to start flow
+- `testTrumpNodeDiesWhenGameEnds` - Death on game over
+- `testTrumpNodeResetsWithGame` - Reset on game restart
+
+**Complete Game Flow Tests (5 tests):**
+- `testCompleteGameFlowWithTrump` - Full game lifecycle with Trump
+- `testTrumpNodeCelebratesOnHighScore` - High score celebration
+- `testMultipleFlapsInSequence` - Multiple flaps handling
+- `testTrumpNodeStaysBelowCeiling` - Ceiling boundary
+- `testTrumpNodeStaysAboveGround` - Ground boundary
+
 ## Adding Tests to Xcode Project
 
 Since these tests were created in a Linux environment, they need to be added to the Xcode project on macOS:
@@ -162,14 +236,21 @@ xcodebuild test \
 
 ## Expected Results
 
-When run on macOS with Xcode, all 53 tests should pass:
+When run on macOS with Xcode, all 111 tests should pass:
 
 ```
 Test Suite 'All tests' passed at 2026-03-02 10:00:00.000.
-	 Executed 53 tests, with 0 failures (0 unexpected) in 0.5 seconds
+	 Executed 111 tests, with 0 failures (0 unexpected) in 5.0 seconds
 ```
 
-**Code Coverage:** Expected ~95% coverage of game engine code (GameManager, GameState, GameScene)
+**Test Breakdown:**
+- GameManagerTests: 26 unit tests
+- GameSceneTests: 23 unit tests
+- GameSceneIntegrationTests: 4 integration tests
+- TrumpNodeTests: 40 unit tests
+- TrumpNodeIntegrationTests: 18 integration tests
+
+**Code Coverage:** Expected ~95% coverage of game engine code (GameManager, GameState, GameScene, TrumpNode, TrumpState)
 
 ## Test Philosophy
 
