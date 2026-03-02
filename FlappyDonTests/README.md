@@ -300,6 +300,86 @@ For detailed testing information, see:
 - `testTrumpNodeStaysBelowCeiling` - Ceiling boundary
 - `testTrumpNodeStaysAboveGround` - Ground boundary
 
+### HapticManagerTests.swift (30 unit tests) ✨ NEW
+
+**Initialization & Singleton (2 tests):**
+- `testHapticManagerSingleton` - Singleton pattern verification
+- `testHapticManagerInitialization` - Proper initialization
+
+**Haptics Enabled State (3 tests):**
+- `testIsHapticsEnabledWhenSoundEnabled` - Haptics follow sound setting
+- `testIsHapticsDisabledWhenSoundDisabled` - Haptics disabled with sound
+- `testHapticsToggleWithSound` - State synchronization
+
+**Setup Method (2 tests):**
+- `testSetupMethod` - Setup without crashing
+- `testMultipleSetupCalls` - Multiple setup calls handling
+
+**Flap Haptic (3 tests):**
+- `testPlayFlapHapticWhenEnabled` - Flap haptic when enabled
+- `testPlayFlapHapticWhenDisabled` - Flap haptic when disabled
+- `testMultipleFlapHaptics` - Rapid flap haptics (10 calls)
+
+**Score Haptic (3 tests):**
+- `testPlayScoreHapticWhenEnabled` - Score haptic when enabled
+- `testPlayScoreHapticWhenDisabled` - Score haptic when disabled
+- `testMultipleScoreHaptics` - Multiple score haptics
+
+**Death Haptic (2 tests):**
+- `testPlayDeathHapticWhenEnabled` - Death haptic when enabled
+- `testPlayDeathHapticWhenDisabled` - Death haptic when disabled
+
+**Button Haptic (3 tests):**
+- `testPlayButtonHapticWhenEnabled` - Button haptic when enabled
+- `testPlayButtonHapticWhenDisabled` - Button haptic when disabled
+- `testMultipleButtonHaptics` - Multiple button haptics
+
+**Integration Tests (5 tests):**
+- `testCompleteGameFlowWithHaptics` - Full game flow with all haptic types
+- `testHapticsDuringGameplayWithSoundToggle` - Haptics with sound toggling
+- `testAllHapticTypesInSequence` - All haptic types sequentially
+- `testRapidHapticPlayback` - Stress test with 50 rapid haptics
+
+**Edge Cases (7 tests):**
+- `testHapticsOnNonPhoneDevice` - iPad/non-phone device handling
+- `testSetupAfterHapticPlayback` - Re-setup after playback
+- `testHapticsWithMultipleSoundToggles` - Rapid sound toggling
+
+### HapticIntegrationTests.swift (20 integration tests) ✨ NEW
+
+**TrumpNode Flap Integration (3 tests):**
+- `testFlapTriggersHapticFeedback` - Flap triggers haptic
+- `testMultipleFlapsTriggerMultipleHaptics` - Multiple flaps (10x)
+- `testFlapWithHapticsDisabled` - Flap without haptics
+
+**GameManager Score Integration (3 tests):**
+- `testScoreIncrementTriggersHaptic` - Score increment triggers haptic
+- `testMultipleScoreIncrementsWithHaptics` - Multiple scores (5x)
+- `testScoreWithHapticsDisabled` - Score without haptics
+
+**GameScene Death Integration (2 tests):**
+- `testGameOverTriggersDeathHaptic` - Game over triggers death haptic
+- `testDeathHapticWithHapticsDisabled` - Death without haptics
+
+**ButtonNode Integration (3 tests):**
+- `testButtonTapTriggersHaptic` - Button tap triggers haptic
+- `testMultipleButtonTapsWithHaptics` - Multiple button taps (5x)
+- `testButtonWithHapticsDisabled` - Button without haptics
+
+**Complete Game Flow (3 tests):**
+- `testCompleteGameFlowWithAllHaptics` - Full game with all haptic types
+- `testGameFlowWithHapticToggling` - Game with haptic toggling mid-game
+- `testRapidGameplayWithHaptics` - Stress test with 20 rapid actions
+
+**Audio-Haptic Synchronization (2 tests):**
+- `testHapticsFollowAudioSetting` - Haptics follow audio state
+- `testHapticsAndAudioInSync` - Sync through multiple toggles (5x)
+
+**Edge Cases (4 tests):**
+- `testHapticsWithNilTrumpNode` - Haptics without trump node
+- `testHapticsAfterSceneTransition` - Haptics after scene change
+- `testHapticsWithGameReset` - Haptics after game reset
+
 ## Adding Tests to Xcode Project
 
 Since these tests were created in a Linux environment, they need to be added to the Xcode project on macOS:
@@ -371,11 +451,11 @@ xcodebuild test \
 
 ## Expected Results
 
-When run on macOS with Xcode, all 111 tests should pass:
+When run on macOS with Xcode, all 161 tests should pass:
 
 ```
-Test Suite 'All tests' passed at 2026-03-02 10:00:00.000.
-	 Executed 111 tests, with 0 failures (0 unexpected) in 5.0 seconds
+Test Suite 'All tests' passed at 2026-03-02 14:00:00.000.
+	 Executed 161 tests, with 0 failures (0 unexpected) in 8.0 seconds
 ```
 
 **Test Breakdown:**
@@ -384,8 +464,10 @@ Test Suite 'All tests' passed at 2026-03-02 10:00:00.000.
 - GameSceneIntegrationTests: 4 integration tests
 - TrumpNodeTests: 40 unit tests
 - TrumpNodeIntegrationTests: 18 integration tests
+- HapticManagerTests: 30 unit tests ✨ NEW
+- HapticIntegrationTests: 20 integration tests ✨ NEW
 
-**Code Coverage:** Expected ~95% coverage of game engine code (GameManager, GameState, GameScene, TrumpNode, TrumpState)
+**Code Coverage:** Expected ~95% coverage of game engine code (GameManager, GameState, GameScene, TrumpNode, TrumpState, HapticManager)
 
 ## Test Philosophy
 
