@@ -13,12 +13,14 @@ class GameScene: SKScene {
     
     private var groundNode: SKNode?
     private var ceilingNode: SKNode?
+    private var trumpNode: TrumpNode?
     private let gameManager = GameManager.shared
     
     override func didMove(to view: SKView) {
         setupPhysics()
         setupBackground()
         setupBoundaries()
+        setupTrump()
     }
     
     private func setupPhysics() {
@@ -53,6 +55,13 @@ class GameScene: SKScene {
         ceilingNode = ceiling
     }
     
+    private func setupTrump() {
+        let trump = TrumpNode()
+        trump.position = CGPoint(x: size.width * 0.25, y: size.height * 0.5)
+        addChild(trump)
+        trumpNode = trump
+    }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard gameManager.isGameActive else {
             if gameManager.currentState == .menu || gameManager.currentState == .gameOver {
@@ -65,8 +74,7 @@ class GameScene: SKScene {
     }
     
     private func handleFlap() {
-        // This will be implemented when Trump character is added
-        // For now, this is a placeholder for the flap action
+        trumpNode?.flap()
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -77,7 +85,7 @@ class GameScene: SKScene {
     }
     
     private func checkBounds() {
-        // Additional bounds checking will be implemented when Trump character is added
+        trumpNode?.updateRotation()
     }
     
     private func updateScrollingElements() {
@@ -103,6 +111,7 @@ extension GameScene: SKPhysicsContactDelegate {
     
     private func handleGameOver() {
         guard gameManager.isGameActive else { return }
+        trumpNode?.die()
         gameManager.endGame()
     }
     
