@@ -15,6 +15,10 @@ class GameScene: SKScene {
     private var ceilingNode: SKNode?
     private let gameManager = GameManager.shared
     
+    // Pause/Resume properties
+    private var isGamePaused: Bool = false
+    private var pauseOverlay: SKNode?
+    
     override func didMove(to view: SKView) {
         setupPhysics()
         setupBackground()
@@ -54,6 +58,12 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // If game is paused, resume on tap
+        if isGamePaused {
+            resumeGame()
+            return
+        }
+        
         guard gameManager.isGameActive else {
             if gameManager.currentState == .menu || gameManager.currentState == .gameOver {
                 gameManager.startGame()
@@ -82,6 +92,78 @@ class GameScene: SKScene {
     
     private func updateScrollingElements() {
         // Scrolling logic will be implemented when obstacles are added
+    }
+    
+    // MARK: - Pause/Resume Methods
+    
+    private func showPauseOverlay() {
+        guard pauseOverlay == nil else { return }
+        
+        let overlay = SKNode()
+        
+        // Semi-transparent black background
+        let background = SKSpriteNode(color: .black, size: size)
+        background.alpha = 0.5
+        background.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        background.zPosition = 1000
+        overlay.addChild(background)
+        
+        // "PAUSED" text
+        let pausedLabel = SKLabelNode(fontNamed: "Arial-BoldMT")
+        pausedLabel.text = "PAUSED"
+        pausedLabel.fontSize = 48
+        pausedLabel.fontColor = .white
+        pausedLabel.position = CGPoint(x: size.width / 2, y: size.height / 2 + 20)
+        pausedLabel.zPosition = 1001
+        overlay.addChild(pausedLabel)
+        
+        // "Tap to resume" instruction
+        let instructionLabel = SKLabelNode(fontNamed: "Arial")
+        instructionLabel.text = "Tap to resume"
+        instructionLabel.fontSize = 24
+        instructionLabel.fontColor = .white
+        instructionLabel.position = CGPoint(x: size.width / 2, y: size.height / 2 - 40)
+        instructionLabel.zPosition = 1001
+        overlay.addChild(instructionLabel)
+        
+        addChild(overlay)
+        pauseOverlay = overlay
+    }
+    
+    private func hidePauseOverlay() {
+        pauseOverlay?.removeFromParent()
+        pauseOverlay = nil
+    }
+    
+    func pauseGame() {
+        guard !isGamePaused else { return }
+        guard gameManager.currentState == .playing else { return }
+        
+        isGamePaused = true
+        
+        // Pause physics
+        physicsWorld.speed = 0
+        
+        // Pause all actions
+        self.isPaused = true
+        
+        // Show pause overlay
+        showPauseOverlay()
+    }
+    
+    func resumeGame() {
+        guard isGamePaused else { return }
+        
+        // Hide pause overlay
+        hidePauseOverlay()
+        
+        // Resume physics
+        physicsWorld.speed = 1.0
+        
+        // Resume actions
+        self.isPaused = false
+        
+        isGamePaused = false
     }
 }
 
