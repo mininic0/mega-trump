@@ -72,7 +72,7 @@ class GameOverScene: SKScene {
     
     private func setupScoreDisplay() {
         let currentScoreLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        currentScoreLabel.text = "Score: \(finalScore)"
+        currentScoreLabel.name = "currentScoreLabel"
         currentScoreLabel.fontSize = 32
         currentScoreLabel.fontColor = .white
         currentScoreLabel.position = CGPoint(x: size.width / 2, y: size.height * 0.55)
@@ -80,6 +80,8 @@ class GameOverScene: SKScene {
         addChild(currentScoreLabel)
         
         if isNewHighScore {
+            animateScore(label: currentScoreLabel, from: 0, to: finalScore, duration: 1.0)
+            
             let newBadge = SKLabelNode(fontNamed: "AvenirNext-Bold")
             newBadge.text = "NEW!"
             newBadge.fontSize = 20
@@ -93,6 +95,8 @@ class GameOverScene: SKScene {
                 SKAction.scale(to: 1.0, duration: 0.3)
             ])
             newBadge.run(SKAction.repeatForever(pulse))
+        } else {
+            currentScoreLabel.text = "Score: \(finalScore)"
         }
         
         let highScoreLabel = SKLabelNode(fontNamed: "AvenirNext-Medium")
@@ -102,6 +106,28 @@ class GameOverScene: SKScene {
         highScoreLabel.position = CGPoint(x: size.width / 2, y: size.height * 0.48)
         highScoreLabel.zPosition = 10
         addChild(highScoreLabel)
+    }
+    
+    private func animateScore(label: SKLabelNode, from: Int, to: Int, duration: TimeInterval) {
+        let steps = 30
+        let increment = max(1, (to - from) / steps)
+        let stepDuration = duration / TimeInterval(steps)
+        
+        var current = from
+        for i in 0..<steps {
+            let wait = SKAction.wait(forDuration: stepDuration * TimeInterval(i))
+            let update = SKAction.run {
+                current = min(current + increment, to)
+                label.text = "Score: \(current)"
+            }
+            run(SKAction.sequence([wait, update]))
+        }
+        
+        let finalWait = SKAction.wait(forDuration: duration)
+        let finalUpdate = SKAction.run {
+            label.text = "Score: \(to)"
+        }
+        run(SKAction.sequence([finalWait, finalUpdate]))
     }
     
     private func setupMedal() {

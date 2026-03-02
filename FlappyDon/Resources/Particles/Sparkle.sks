@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archive type="com.apple.InterfaceBuilder3.SpriteKit.SKScene" version="8.00">
+    <data>
+        <int key="NSWhite">0</int>
+        <object class="SKEmitterNode" id="1">
+            <string key="name">Sparkle</string>
+            <float key="particleBirthRate">30</float>
+            <float key="numParticlesToEmit">0</float>
+            <float key="particleLifetime">0.8</float>
+            <float key="particleLifetimeRange">0.3</float>
+            <float key="particlePositionRangeX">0</float>
+            <float key="particlePositionRangeY">0</float>
+            <float key="particleSpeed">50</float>
+            <float key="particleSpeedRange">20</float>
+            <float key="emissionAngle">0</float>
+            <float key="emissionAngleRange">6.28318530717959</float>
+            <float key="particleAlpha">1</float>
+            <float key="particleAlphaRange">0</float>
+            <float key="particleAlphaSpeed">-1.5</float>
+            <float key="particleScale">0.08</float>
+            <float key="particleScaleRange">0.04</float>
+            <float key="particleScaleSpeed">0</float>
+            <float key="particleRotation">0</float>
+            <float key="particleRotationRange">6.28318530717959</float>
+            <float key="particleRotationSpeed">0</float>
+            <float key="particleColorBlendFactor">1</float>
+            <float key="particleColorBlendFactorRange">0</float>
+            <float key="particleColorBlendFactorSpeed">0</float>
+            <object class="SKColor" key="particleColor">
+                <float key="red">1</float>
+                <float key="green">0.9</float>
+                <float key="blue">0.2</float>
+                <float key="alpha">1</float>
+            </object>
+            <object class="SKColor" key="particleColorRedRange">
+                <float key="red">0</float>
+                <float key="green">0</float>
+                <float key="blue">0</float>
+                <float key="alpha">0</float>
+            </object>
+            <object class="SKColor" key="particleColorGreenRange">
+                <float key="red">0</float>
+                <float key="green">0.1</float>
+                <float key="blue">0</float>
+                <float key="alpha">0</float>
+            </object>
+            <object class="SKColor" key="particleColorBlueRange">
+                <float key="red">0</float>
+                <float key="green">0</float>
+                <float key="blue">0.3</float>
+                <float key="alpha">0</float>
+            </object>
+            <object class="SKColor" key="particleColorAlphaRange">
+                <float key="red">0</float>
+                <float key="green">0</float>
+                <float key="blue">0</float>
+                <float key="alpha">0</float>
+            </object>
+            <int key="particleBlendMode">1</int>
+            <reference key="particleTexture" ref="null"/>
+            <string key="particleAction">null</string>
+            <string key="fieldBitMask">0</string>
+            <float key="xAcceleration">0</float>
+            <float key="yAcceleration">0</float>
+        </object>
+    </data>
+</archive>

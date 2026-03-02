@@ -1,4 +1,5 @@
 import SpriteKit
+import UIKit
 
 class ButtonNode: SKSpriteNode {
     
@@ -32,6 +33,11 @@ class ButtonNode: SKSpriteNode {
     func handleTouchBegan() {
         color = highlightedColor
         run(SKAction.scale(to: 0.95, duration: 0.1))
+        
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+        
+        AudioManager.shared.playSound("button")
     }
     
     func handleTouchEnded() {

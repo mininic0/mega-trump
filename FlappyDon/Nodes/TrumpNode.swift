@@ -227,6 +227,16 @@ class TrumpNode: SKSpriteNode {
         
         run(bobForever, withKey: "idleBob")
         
+        // Subtle rotation sway
+        let rotateRight = SKAction.rotate(toAngle: 0.05, duration: 0.7)
+        rotateRight.timingMode = .easeInEaseOut
+        let rotateLeft = SKAction.rotate(toAngle: -0.05, duration: 0.7)
+        rotateLeft.timingMode = .easeInEaseOut
+        let rotateSequence = SKAction.sequence([rotateRight, rotateLeft])
+        let rotateForever = SKAction.repeatForever(rotateSequence)
+        
+        run(rotateForever, withKey: "idleRotation")
+        
         // Texture animation if available
         if idleTextures.count > 1 {
             let textureAnimation = SKAction.animate(with: idleTextures, timePerFrame: 0.5)
@@ -268,26 +278,33 @@ class TrumpNode: SKSpriteNode {
         isAnimating = false
         removeAction(forKey: "idleBob")
         removeAction(forKey: "idleTexture")
+        removeAction(forKey: "idleRotation")
         
         // Change to dead texture if available
         if let deadTexture = deadTexture {
             texture = deadTexture
         }
         
-        // Tumble and fall
-        let tumble = SKAction.rotate(byAngle: .pi * 2, duration: 0.4)
-        let fadeOut = SKAction.fadeAlpha(to: 0.7, duration: 0.4)
-        let group = SKAction.group([tumble, fadeOut])
+        // Dramatic tumble and fall with spin
+        let tumble = SKAction.rotate(byAngle: .pi * 3, duration: 0.6)
+        let fadeOut = SKAction.fadeAlpha(to: 0.7, duration: 0.6)
+        let scaleDown = SKAction.scale(to: 0.9, duration: 0.6)
+        let group = SKAction.group([tumble, fadeOut, scaleDown])
         
         run(group)
         
         // Disable physics interaction
         physicsBody?.collisionBitMask = 0
+        
+        // Trigger heavy haptic feedback
+        let heavyFeedback = UIImpactFeedbackGenerator(style: .heavy)
+        heavyFeedback.impactOccurred()
     }
     
     private func playCelebrateAnimation() {
         removeAction(forKey: "idleBob")
         removeAction(forKey: "idleTexture")
+        removeAction(forKey: "idleRotation")
         
         // Change to celebrate texture if available
         if let celebrateTexture = celebrateTexture {
