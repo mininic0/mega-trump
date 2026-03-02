@@ -5,6 +5,9 @@ class GameOverScene: SKScene {
     private let finalScore: Int
     private let previousHighScore: Int
     private let isNewHighScore: Bool
+    private var retryButton: ButtonNode!
+    private var shareButton: ButtonNode!
+    private var menuButton: ButtonNode!
     
     init(size: CGSize, score: Int) {
         self.finalScore = score
@@ -117,37 +120,40 @@ class GameOverScene: SKScene {
     }
     
     private func setupButtons() {
-        let retryButton = ButtonNode(
+        retryButton = ButtonNode(
             size: CGSize(width: 180, height: 50),
             normalColor: UIColor(red: 0.89, green: 0.11, blue: 0.24, alpha: 1.0), // MAGA Red
             highlightedColor: UIColor(red: 0.7, green: 0.09, blue: 0.19, alpha: 1.0)
         )
         retryButton.position = CGPoint(x: size.width / 2, y: size.height * 0.25)
         retryButton.zPosition = 10
+        retryButton.name = "retryButton"
         retryButton.setup(text: "RETRY") { [weak self] in
             self?.retry()
         }
         addChild(retryButton)
         
-        let shareButton = ButtonNode(
+        shareButton = ButtonNode(
             size: CGSize(width: 180, height: 50),
             normalColor: UIColor(red: 0.0, green: 0.24, blue: 0.45, alpha: 1.0), // Navy Blue
             highlightedColor: UIColor(red: 0.0, green: 0.19, blue: 0.36, alpha: 1.0)
         )
         shareButton.position = CGPoint(x: size.width / 2, y: size.height * 0.17)
         shareButton.zPosition = 10
+        shareButton.name = "shareButton"
         shareButton.setup(text: "SHARE") { [weak self] in
             self?.share()
         }
         addChild(shareButton)
         
-        let menuButton = ButtonNode(
+        menuButton = ButtonNode(
             size: CGSize(width: 180, height: 50),
             normalColor: UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1.0),
             highlightedColor: UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1.0)
         )
         menuButton.position = CGPoint(x: size.width / 2, y: size.height * 0.09)
         menuButton.zPosition = 10
+        menuButton.name = "menuButton"
         menuButton.setup(text: "MENU") { [weak self] in
             self?.returnToMenu()
         }
@@ -240,5 +246,39 @@ class GameOverScene: SKScene {
         let menuScene = MenuScene(size: size)
         let transition = SKTransition.fade(withDuration: 0.3)
         view?.presentScene(menuScene, transition: transition)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self)
+        let touchedNode = atPoint(location)
+        
+        if touchedNode == retryButton || touchedNode.parent == retryButton {
+            retryButton.handleTouchBegan()
+        } else if touchedNode == shareButton || touchedNode.parent == shareButton {
+            shareButton.handleTouchBegan()
+        } else if touchedNode == menuButton || touchedNode.parent == menuButton {
+            menuButton.handleTouchBegan()
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self)
+        let touchedNode = atPoint(location)
+        
+        if touchedNode == retryButton || touchedNode.parent == retryButton {
+            retryButton.handleTouchEnded()
+        } else if touchedNode == shareButton || touchedNode.parent == shareButton {
+            shareButton.handleTouchEnded()
+        } else if touchedNode == menuButton || touchedNode.parent == menuButton {
+            menuButton.handleTouchEnded()
+        }
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        retryButton.handleTouchCancelled()
+        shareButton.handleTouchCancelled()
+        menuButton.handleTouchCancelled()
     }
 }

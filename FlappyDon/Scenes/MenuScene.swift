@@ -4,6 +4,7 @@ class MenuScene: SKScene {
     
     private var soundEnabled = true
     private var soundIcon: SKSpriteNode!
+    private var playButton: ButtonNode!
     
     override func didMove(to view: SKView) {
         setupBackground()
@@ -56,13 +57,14 @@ class MenuScene: SKScene {
     }
     
     private func setupPlayButton() {
-        let playButton = ButtonNode(
+        playButton = ButtonNode(
             size: CGSize(width: 200, height: 60),
             normalColor: UIColor(red: 0.89, green: 0.11, blue: 0.24, alpha: 1.0), // MAGA Red #E31C3D
             highlightedColor: UIColor(red: 0.7, green: 0.09, blue: 0.19, alpha: 1.0)
         )
         playButton.position = CGPoint(x: size.width / 2, y: size.height * 0.35)
         playButton.zPosition = 10
+        playButton.name = "playButton"
         playButton.setup(text: "PLAY") { [weak self] in
             self?.startGame()
         }
@@ -142,6 +144,22 @@ class MenuScene: SKScene {
         
         if touchedNode.name == "soundToggle" || touchedNode.parent?.name == "soundToggle" {
             toggleSound()
+        } else if touchedNode == playButton || touchedNode.parent == playButton {
+            playButton.handleTouchBegan()
         }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self)
+        let touchedNode = atPoint(location)
+        
+        if touchedNode == playButton || touchedNode.parent == playButton {
+            playButton.handleTouchEnded()
+        }
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        playButton.handleTouchCancelled()
     }
 }

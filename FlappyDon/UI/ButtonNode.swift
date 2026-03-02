@@ -3,7 +3,7 @@ import SpriteKit
 class ButtonNode: SKSpriteNode {
     
     private var label: SKLabelNode!
-    private var action: (() -> Void)?
+    var action: (() -> Void)?
     private let normalColor: UIColor
     private let highlightedColor: UIColor
     
@@ -11,8 +11,6 @@ class ButtonNode: SKSpriteNode {
         self.normalColor = normalColor
         self.highlightedColor = highlightedColor
         super.init(texture: nil, color: normalColor, size: size)
-        
-        self.isUserInteractionEnabled = true
         
         label = SKLabelNode(fontNamed: "AvenirNext-Bold")
         label.fontSize = 28
@@ -31,24 +29,18 @@ class ButtonNode: SKSpriteNode {
         self.action = action
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    func handleTouchBegan() {
         color = highlightedColor
         run(SKAction.scale(to: 0.95, duration: 0.1))
     }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    func handleTouchEnded() {
         color = normalColor
         run(SKAction.scale(to: 1.0, duration: 0.1))
-        
-        guard let touch = touches.first else { return }
-        let location = touch.location(in: self)
-        
-        if contains(location) {
-            action?()
-        }
+        action?()
     }
     
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+    func handleTouchCancelled() {
         color = normalColor
         run(SKAction.scale(to: 1.0, duration: 0.1))
     }
