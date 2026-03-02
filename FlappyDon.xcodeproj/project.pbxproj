@@ -20,6 +20,7 @@
 		1A000035000000000000001 /* TrumpNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A000036000000000000001 /* TrumpNode.swift */; };
 		1A000037000000000000001 /* TrumpState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A000038000000000000001 /* TrumpState.swift */; };
 		1A000039000000000000001 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A000040000000000000001 /* HapticManager.swift */; };
+		1A000041000000000000001 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A000042000000000000001 /* AudioManager.swift */; };
 		1A000009000000000000001 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A00000A000000000000001 /* Main.storyboard */; };
 		1A00000B000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A00000C000000000000001 /* Assets.xcassets */; };
 		1A00000D000000000000001 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A00000E000000000000001 /* LaunchScreen.storyboard */; };
@@ -46,6 +47,7 @@
 		1A000036000000000000001 /* TrumpNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrumpNode.swift; sourceTree = "<group>"; };
 		1A000038000000000000001 /* TrumpState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrumpState.swift; sourceTree = "<group>"; };
 		1A000040000000000000001 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
+		1A000042000000000000001 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 		1A000019000000000000001 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				1A000042000000000000001 /* AudioManager.swift */,
 				1A000040000000000000001 /* HapticManager.swift */,
 			);
 			path = Managers;
@@ -247,6 +250,7 @@
 				1A000035000000000000001 /* TrumpNode.swift in Sources */,
 				1A000037000000000000001 /* TrumpState.swift in Sources */,
 				1A000039000000000000001 /* HapticManager.swift in Sources */,
+				1A000041000000000000001 /* AudioManager.swift in Sources */,
 				1A000001000000000000001 /* AppDelegate.swift in Sources */,
 				1A000003000000000000001 /* SceneDelegate.swift in Sources */,
 			);
