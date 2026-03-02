@@ -287,6 +287,209 @@ final class GameSceneTests: XCTestCase {
         // This is verified by the fact that no errors occur and game state remains unchanged
         XCTAssertFalse(GameManager.shared.isGameActive)
     }
+    
+    // MARK: - Pause/Resume Tests
+    
+    func testPauseGameWhenPlaying() {
+        // Given: Active game
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        GameManager.shared.startGame()
+        
+        // When: Game is paused
+        scene.pauseGame()
+        
+        // Then: Physics should be paused
+        XCTAssertEqual(scene.physicsWorld.speed, 0, "Physics world speed should be 0")
+        XCTAssertTrue(scene.isPaused, "Scene should be paused")
+    }
+    
+    func testPauseGameShowsOverlay() {
+        // Given: Active game
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        GameManager.shared.startGame()
+        
+        // When: Game is paused
+        scene.pauseGame()
+        
+        // Then: Pause overlay should be visible
+        let overlayNodes = scene.children.filter { node in
+            node.children.contains { child in
+                (child as? SKLabelNode)?.text == "PAUSED"
+            }
+        }
+        XCTAssertEqual(overlayNodes.count, 1, "Should have exactly one pause overlay")
+    }
+    
+    func testPauseGameWhenNotPlaying() {
+        // Given: Game in menu state
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        XCTAssertEqual(GameManager.shared.currentState, .menu)
+        
+        // When: Pause is called
+        scene.pauseGame()
+        
+        // Then: Game should not pause (guard prevents it)
+        XCTAssertFalse(scene.isPaused, "Scene should not pause when not playing")
+    }
+    
+    func testPauseGameWhenAlreadyPaused() {
+        // Given: Already paused game
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        GameManager.shared.startGame()
+        scene.pauseGame()
+        let initialChildCount = scene.children.count
+        
+        // When: Pause is called again
+        scene.pauseGame()
+        
+        // Then: Should not create duplicate overlay
+        XCTAssertEqual(scene.children.count, initialChildCount, "Should not create duplicate overlay")
+    }
+    
+    func testResumeGameRestoresPhysics() {
+        // Given: Paused game
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        GameManager.shared.startGame()
+        scene.pauseGame()
+        XCTAssertTrue(scene.isPaused)
+        
+        // When: Game is resumed
+        scene.resumeGame()
+        
+        // Then: Physics should be restored
+        XCTAssertEqual(scene.physicsWorld.speed, 1.0, "Physics world speed should be 1.0")
+        XCTAssertFalse(scene.isPaused, "Scene should not be paused")
+    }
+    
+    func testResumeGameHidesOverlay() {
+        // Given: Paused game with overlay
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        GameManager.shared.startGame()
+        scene.pauseGame()
+        
+        // When: Game is resumed
+        scene.resumeGame()
+        
+        // Then: Pause overlay should be removed
+        let overlayNodes = scene.children.filter { node in
+            node.children.contains { child in
+                (child as? SKLabelNode)?.text == "PAUSED"
+            }
+        }
+        XCTAssertEqual(overlayNodes.count, 0, "Pause overlay should be removed")
+    }
+    
+    func testResumeGameWhenNotPaused() {
+        // Given: Active game that is not paused
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        GameManager.shared.startGame()
+        XCTAssertFalse(scene.isPaused)
+        
+        // When: Resume is called
+        scene.resumeGame()
+        
+        // Then: Should handle gracefully (guard prevents action)
+        XCTAssertFalse(scene.isPaused)
+        XCTAssertEqual(scene.physicsWorld.speed, 1.0)
+    }
+    
+    func testTouchResumesGameWhenPaused() {
+        // Given: Paused game
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        GameManager.shared.startGame()
+        scene.pauseGame()
+        XCTAssertTrue(scene.isPaused)
+        
+        // When: User taps screen
+        let touch = UITouch()
+        scene.touchesBegan([touch], with: nil)
+        
+        // Then: Game should resume
+        XCTAssertFalse(scene.isPaused, "Game should resume on tap")
+        XCTAssertEqual(scene.physicsWorld.speed, 1.0, "Physics should be restored")
+    }
+    
+    func testPauseOverlayHasSemiTransparentBackground() {
+        // Given: Active game
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        GameManager.shared.startGame()
+        
+        // When: Game is paused
+        scene.pauseGame()
+        
+        // Then: Overlay should have semi-transparent black background
+        let overlayNode = scene.children.first { node in
+            node.children.contains { child in
+                (child as? SKLabelNode)?.text == "PAUSED"
+            }
+        }
+        
+        XCTAssertNotNil(overlayNode, "Overlay node should exist")
+        
+        let backgroundNode = overlayNode?.children.first { child in
+            (child as? SKSpriteNode)?.color == .black
+        } as? SKSpriteNode
+        
+        XCTAssertNotNil(backgroundNode, "Background node should exist")
+        XCTAssertEqual(backgroundNode?.alpha, 0.5, accuracy: 0.01, "Background should be semi-transparent")
+    }
+    
+    func testPauseOverlayHasInstructionText() {
+        // Given: Active game
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        GameManager.shared.startGame()
+        
+        // When: Game is paused
+        scene.pauseGame()
+        
+        // Then: Overlay should have "Tap to resume" instruction
+        let overlayNode = scene.children.first { node in
+            node.children.contains { child in
+                (child as? SKLabelNode)?.text == "PAUSED"
+            }
+        }
+        
+        let instructionLabel = overlayNode?.children.first { child in
+            (child as? SKLabelNode)?.text == "Tap to resume"
+        } as? SKLabelNode
+        
+        XCTAssertNotNil(instructionLabel, "Instruction label should exist")
+        XCTAssertEqual(instructionLabel?.text, "Tap to resume")
+    }
+    
+    func testPauseOverlayZPosition() {
+        // Given: Active game
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        GameManager.shared.startGame()
+        
+        // When: Game is paused
+        scene.pauseGame()
+        
+        // Then: Overlay elements should have high z-position (above everything)
+        let overlayNode = scene.children.first { node in
+            node.children.contains { child in
+                (child as? SKLabelNode)?.text == "PAUSED"
+            }
+        }
+        
+        let backgroundNode = overlayNode?.children.first { child in
+            (child as? SKSpriteNode)?.color == .black
+        } as? SKSpriteNode
+        
+        XCTAssertNotNil(backgroundNode)
+        XCTAssertEqual(backgroundNode?.zPosition, 1000, "Background should have z-position 1000")
+    }
 }
 
 // MARK: - Integration Tests
@@ -413,5 +616,127 @@ final class GameSceneIntegrationTests: XCTestCase {
         XCTAssertNotNil(ceilingNode)
         XCTAssertFalse(groundNode?.physicsBody?.isDynamic ?? true)
         XCTAssertFalse(ceilingNode?.physicsBody?.isDynamic ?? true)
+    }
+    
+    // MARK: - Pause/Resume Integration Tests
+    
+    func testPauseResumeGameFlow() {
+        // Verify complete pause/resume cycle
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        
+        // 1. Start game
+        let touch = UITouch()
+        scene.touchesBegan([touch], with: nil)
+        XCTAssertTrue(GameManager.shared.isGameActive)
+        XCTAssertFalse(scene.isPaused)
+        
+        // 2. Pause game
+        scene.pauseGame()
+        XCTAssertTrue(scene.isPaused)
+        XCTAssertEqual(scene.physicsWorld.speed, 0)
+        
+        // Verify overlay exists
+        let overlayAfterPause = scene.children.filter { node in
+            node.children.contains { ($0 as? SKLabelNode)?.text == "PAUSED" }
+        }
+        XCTAssertEqual(overlayAfterPause.count, 1)
+        
+        // 3. Resume game via tap
+        scene.touchesBegan([touch], with: nil)
+        XCTAssertFalse(scene.isPaused)
+        XCTAssertEqual(scene.physicsWorld.speed, 1.0)
+        
+        // Verify overlay removed
+        let overlayAfterResume = scene.children.filter { node in
+            node.children.contains { ($0 as? SKLabelNode)?.text == "PAUSED" }
+        }
+        XCTAssertEqual(overlayAfterResume.count, 0)
+        
+        // 4. Game should still be active
+        XCTAssertTrue(GameManager.shared.isGameActive)
+        XCTAssertEqual(GameManager.shared.currentState, .playing)
+    }
+    
+    func testMultiplePauseResumeCycles() {
+        // Verify multiple pause/resume cycles work correctly
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        let touch = UITouch()
+        
+        // Start game
+        scene.touchesBegan([touch], with: nil)
+        
+        // First pause/resume cycle
+        scene.pauseGame()
+        XCTAssertTrue(scene.isPaused)
+        scene.resumeGame()
+        XCTAssertFalse(scene.isPaused)
+        
+        // Second pause/resume cycle
+        scene.pauseGame()
+        XCTAssertTrue(scene.isPaused)
+        scene.resumeGame()
+        XCTAssertFalse(scene.isPaused)
+        
+        // Third pause/resume cycle
+        scene.pauseGame()
+        XCTAssertTrue(scene.isPaused)
+        scene.resumeGame()
+        XCTAssertFalse(scene.isPaused)
+        
+        // Game should still be active and functional
+        XCTAssertTrue(GameManager.shared.isGameActive)
+        XCTAssertEqual(scene.physicsWorld.speed, 1.0)
+    }
+    
+    func testPauseDoesNotAffectGameState() {
+        // Verify pause/resume doesn't affect game state (score, etc.)
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        let touch = UITouch()
+        
+        // Start game and score points
+        scene.touchesBegan([touch], with: nil)
+        GameManager.shared.incrementScore()
+        GameManager.shared.incrementScore()
+        XCTAssertEqual(GameManager.shared.currentScore, 2)
+        
+        // Pause and resume
+        scene.pauseGame()
+        scene.resumeGame()
+        
+        // Score should be preserved
+        XCTAssertEqual(GameManager.shared.currentScore, 2)
+        XCTAssertTrue(GameManager.shared.isGameActive)
+        XCTAssertEqual(GameManager.shared.currentState, .playing)
+    }
+    
+    func testPauseOnlyWorksWhenPlaying() {
+        // Verify pause only works during active gameplay
+        view.presentScene(scene)
+        scene.didMove(to: view)
+        
+        // Try to pause in menu state
+        XCTAssertEqual(GameManager.shared.currentState, .menu)
+        scene.pauseGame()
+        XCTAssertFalse(scene.isPaused, "Should not pause in menu state")
+        
+        // Start game
+        let touch = UITouch()
+        scene.touchesBegan([touch], with: nil)
+        
+        // Pause should work now
+        scene.pauseGame()
+        XCTAssertTrue(scene.isPaused, "Should pause during gameplay")
+        
+        // Resume and end game
+        scene.resumeGame()
+        GameManager.shared.endGame()
+        
+        // Try to pause in game over state
+        XCTAssertEqual(GameManager.shared.currentState, .gameOver)
+        scene.pauseGame()
+        XCTAssertFalse(scene.isPaused, "Should not pause in game over state")
     }
 }
