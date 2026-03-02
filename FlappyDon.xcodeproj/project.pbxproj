@@ -16,9 +16,10 @@
 		1A000005000000000000001 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A000006000000000000001 /* GameViewController.swift */; };
 		1A000032000000000000001 /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A000030000000000000001 /* GameManager.swift */; };
 		1A000033000000000000001 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A000031000000000000001 /* GameState.swift */; };
-		1A000007000000000000001 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A000008000000000000001 /* GameScene.swift */; };
 		1A000035000000000000001 /* TrumpNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A000036000000000000001 /* TrumpNode.swift */; };
 		1A000037000000000000001 /* TrumpState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A000038000000000000001 /* TrumpState.swift */; };
+		1A000040000000000000001 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A000039000000000000001 /* StorageManager.swift */; };
+		1A000007000000000000001 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A000008000000000000001 /* GameScene.swift */; };
 		1A000009000000000000001 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A00000A000000000000001 /* Main.storyboard */; };
 		1A00000B000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A00000C000000000000001 /* Assets.xcassets */; };
 		1A00000D000000000000001 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A00000E000000000000001 /* LaunchScreen.storyboard */; };
@@ -44,6 +45,7 @@
 		1A000031000000000000001 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
 		1A000036000000000000001 /* TrumpNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrumpNode.swift; sourceTree = "<group>"; };
 		1A000038000000000000001 /* TrumpState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrumpState.swift; sourceTree = "<group>"; };
+		1A000039000000000000001 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 			children = (
 				1A000030000000000000001 /* GameManager.swift */,
 				1A000031000000000000001 /* GameState.swift */,
+				1A000036000000000000001 /* StorageManager.swift */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -243,6 +246,7 @@
 				1A000033000000000000001 /* GameState.swift in Sources */,
 				1A000035000000000000001 /* TrumpNode.swift in Sources */,
 				1A000037000000000000001 /* TrumpState.swift in Sources */,
+				1A000040000000000000001 /* StorageManager.swift in Sources */,
 				1A000001000000000000001 /* AppDelegate.swift in Sources */,
 				1A000003000000000000001 /* SceneDelegate.swift in Sources */,
 			);
