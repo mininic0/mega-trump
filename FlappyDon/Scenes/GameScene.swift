@@ -2,6 +2,8 @@ import SpriteKit
 
 class GameScene: SKScene {
     
+    private var score = 0
+    
     override func didMove(to view: SKView) {
         setupPhysics()
         setupBackground()
@@ -14,6 +16,12 @@ class GameScene: SKScene {
     
     private func setupBackground() {
         backgroundColor = SKColor(red: 0.53, green: 0.81, blue: 0.92, alpha: 1.0)
+    }
+    
+    func gameOver() {
+        let gameOverScene = GameOverScene(size: size, score: score)
+        let transition = SKTransition.fade(withDuration: 0.3)
+        view?.presentScene(gameOverScene, transition: transition)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
