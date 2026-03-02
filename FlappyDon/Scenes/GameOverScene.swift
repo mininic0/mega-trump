@@ -237,9 +237,13 @@ class GameOverScene: SKScene {
     }
     
     private func share() {
-        // Share functionality will be implemented in ticket 09
-        // For now, just log the action
-        print("Share button tapped - Score: \(finalScore)")
+        guard let viewController = view?.window?.rootViewController else {
+            print("Unable to get view controller for sharing")
+            return
+        }
+        
+        let medal = getMedal(for: finalScore)
+        ShareManager.shared.shareScore(score: finalScore, medal: medal, from: viewController)
     }
     
     private func returnToMenu() {
