@@ -2,6 +2,7 @@ import SpriteKit
 
 class GameScene: SKScene {
     
+    private var score = 0
     // Physics categories
     struct PhysicsCategory {
         static let trump: UInt32 = 0x1 << 0
@@ -30,6 +31,10 @@ class GameScene: SKScene {
         backgroundColor = SKColor(red: 0.53, green: 0.81, blue: 0.92, alpha: 1.0)
     }
     
+    func gameOver() {
+        let gameOverScene = GameOverScene(size: size, score: score)
+        let transition = SKTransition.fade(withDuration: 0.3)
+        view?.presentScene(gameOverScene, transition: transition)
     private func setupBoundaries() {
         let groundHeight: CGFloat = 50
         let ground = SKNode()
