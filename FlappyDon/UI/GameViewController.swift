@@ -19,6 +19,39 @@ class GameViewController: UIViewController {
             view.preferredFramesPerSecond = 60
             #endif
         }
+        
+        // Register for app lifecycle notifications
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appDidEnterBackground),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appWillEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appWillResignActive),
+            name: UIApplication.willResignActiveNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appDidBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLayoutSubviews() {
@@ -33,6 +66,36 @@ class GameViewController: UIViewController {
         }
     }
 
+    // MARK: - App Lifecycle Event Handlers
+    
+    @objc func appWillResignActive(_ notification: Notification) {
+        // App is about to lose focus (phone call, control center, etc.)
+        if let gameScene = (view as? SKView)?.scene as? GameScene {
+            if GameManager.shared.currentState == .playing {
+                gameScene.pauseGame()
+            }
+        }
+    }
+    
+    @objc func appDidBecomeActive(_ notification: Notification) {
+        // App regained focus
+        // Don't auto-resume - wait for user tap
+    }
+    
+    @objc func appDidEnterBackground(_ notification: Notification) {
+        // App moved to background
+        if let gameScene = (view as? SKView)?.scene as? GameScene {
+            if GameManager.shared.currentState == .playing {
+                gameScene.pauseGame()
+            }
+        }
+    }
+    
+    @objc func appWillEnterForeground(_ notification: Notification) {
+        // App returning from background
+        // Game remains paused until user taps
+    }
+    
     override var shouldAutorotate: Bool {
         return false
     }
