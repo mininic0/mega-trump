@@ -9,7 +9,9 @@ FlappyDonTests/
 ├── Game/
 │   └── GameManagerTests.swift      # 26 unit tests for GameManager
 ├── Scenes/
-│   └── GameSceneTests.swift        # 23 unit tests + 4 integration tests
+│   └── GameSceneTests.swift        # 35 unit tests + 8 integration tests
+├── UI/
+│   └── GameViewControllerTests.swift # 7 unit tests + 4 integration tests
 ├── Info.plist                      # Test bundle configuration
 └── README.md                       # This file
 ```
@@ -50,7 +52,7 @@ FlappyDonTests/
 - `testSingletonInstance` - Verifies singleton pattern
 - `testSingletonStateSharing` - Tests state sharing across instances
 
-### GameSceneTests.swift (23 unit tests)
+### GameSceneTests.swift (35 unit tests)
 
 **Physics Setup Tests:**
 - `testPhysicsWorldGravity` - Verifies gravity is -9.8
@@ -84,12 +86,55 @@ FlappyDonTests/
 - `testUpdateCalledWhenGameActive` - Update runs when active
 - `testUpdateNotProcessedWhenGameInactive` - Update skips when inactive
 
-### GameSceneIntegrationTests.swift (4 integration tests)
+**Pause/Resume Tests:**
+- `testPauseGameWhenPlaying` - Pauses physics when game is active
+- `testPauseGameShowsOverlay` - Displays pause overlay UI
+- `testPauseGameWhenNotPlaying` - Guards against pause in menu/game over
+- `testPauseGameWhenAlreadyPaused` - Prevents duplicate pause overlay
+- `testResumeGameRestoresPhysics` - Restores physics world speed
+- `testResumeGameHidesOverlay` - Removes pause overlay
+- `testResumeGameWhenNotPaused` - Handles resume gracefully when not paused
+- `testTouchResumesGameWhenPaused` - Tap resumes paused game
+- `testPauseOverlayHasSemiTransparentBackground` - Verifies overlay background alpha
+- `testPauseOverlayHasInstructionText` - Verifies "Tap to resume" text
+- `testPauseOverlayZPosition` - Verifies overlay renders above game elements
+
+### GameSceneIntegrationTests.swift (8 integration tests)
 
 - `testCompleteGameFlow` - Full game lifecycle (menu → playing → gameOver → menu)
 - `testMultipleGameSessions` - Multiple sessions with high score tracking
 - `testSceneAndManagerIntegration` - Scene and GameManager coordination
 - `testPhysicsAndBoundariesIntegration` - Physics world and boundaries working together
+- `testPauseResumeGameFlow` - Complete pause/resume cycle with overlay
+- `testMultiplePauseResumeCycles` - Multiple pause/resume cycles work correctly
+- `testPauseDoesNotAffectGameState` - Score and state preserved during pause
+- `testPauseOnlyWorksWhenPlaying` - Pause only functions during active gameplay
+
+### GameViewControllerTests.swift (7 unit tests)
+
+**Lifecycle Notification Registration Tests:**
+- `testViewControllerRegistersForLifecycleNotifications` - Verifies notification observers registered
+
+**App Will Resign Active Tests:**
+- `testAppWillResignActivePausesGameWhenPlaying` - Pauses game on interruption
+- `testAppWillResignActiveDoesNotPauseWhenNotPlaying` - No pause in menu/game over
+
+**App Did Become Active Tests:**
+- `testAppDidBecomeActiveDoesNotAutoResume` - Game remains paused until user tap
+
+**App Did Enter Background Tests:**
+- `testAppDidEnterBackgroundPausesGameWhenPlaying` - Pauses game when backgrounded
+- `testAppDidEnterBackgroundDoesNotPauseWhenNotPlaying` - No pause in menu/game over
+
+**App Will Enter Foreground Tests:**
+- `testAppWillEnterForegroundDoesNotAutoResume` - Game remains paused until user tap
+
+### GameViewControllerIntegrationTests.swift (4 integration tests)
+
+- `testCompleteBackgroundForegroundCycle` - Full background/foreground lifecycle
+- `testPhoneCallInterruptionFlow` - Phone call interruption and resume
+- `testMultipleInterruptionsCycle` - Multiple interruptions handled correctly
+- `testLifecycleEventsPreserveGameState` - Score and state preserved during lifecycle events
 
 ## Adding Tests to Xcode Project
 
@@ -162,14 +207,20 @@ xcodebuild test \
 
 ## Expected Results
 
-When run on macOS with Xcode, all 53 tests should pass:
+When run on macOS with Xcode, all 80 tests should pass:
 
 ```
 Test Suite 'All tests' passed at 2026-03-02 10:00:00.000.
-	 Executed 53 tests, with 0 failures (0 unexpected) in 0.5 seconds
+	 Executed 80 tests, with 0 failures (0 unexpected) in 0.8 seconds
 ```
 
-**Code Coverage:** Expected ~95% coverage of game engine code (GameManager, GameState, GameScene)
+**Code Coverage:** Expected ~95% coverage of game engine code (GameManager, GameState, GameScene, GameViewController)
+
+**Breakdown:**
+- GameManagerTests: 26 tests
+- GameSceneTests: 35 unit tests + 8 integration tests
+- GameViewControllerTests: 7 unit tests + 4 integration tests
+- **Total: 80 tests (68 unit, 12 integration)**
 
 ## Test Philosophy
 
