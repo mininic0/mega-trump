@@ -33,6 +33,7 @@ class GameManager {
     func incrementScore() {
         guard isGameActive else { return }
         currentScore += 1
+        HapticManager.shared.playScoreHaptic()
     }
     
     func resetGame() {

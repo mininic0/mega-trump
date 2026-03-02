@@ -32,6 +32,7 @@ class ButtonNode: SKSpriteNode {
     func handleTouchBegan() {
         color = highlightedColor
         run(SKAction.scale(to: 0.95, duration: 0.1))
+        HapticManager.shared.playButtonHaptic()
     }
     
     func handleTouchEnded() {

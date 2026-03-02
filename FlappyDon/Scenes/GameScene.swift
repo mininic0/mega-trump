@@ -116,6 +116,7 @@ extension GameScene: SKPhysicsContactDelegate {
     
     private func handleGameOver() {
         guard gameManager.isGameActive else { return }
+        HapticManager.shared.playDeathHaptic()
         trumpNode?.die()
         gameManager.endGame()
     }

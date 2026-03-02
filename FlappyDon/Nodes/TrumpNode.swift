@@ -180,8 +180,7 @@ class TrumpNode: SKSpriteNode {
         playFlapAnimation()
         
         // Trigger haptic feedback
-        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
-        impactFeedback.impactOccurred()
+        HapticManager.shared.playFlapHaptic()
         
         currentState = .flapping
     }
