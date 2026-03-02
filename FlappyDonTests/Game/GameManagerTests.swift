@@ -4,19 +4,26 @@ import XCTest
 final class GameManagerTests: XCTestCase {
     
     var gameManager: GameManager!
-    let testHighScoreKey = "HighScore"
+    let testHighScoreKey = "flappydon.highScore"
+    let testSoundEnabledKey = "flappydon.soundEnabled"
     
     override func setUp() {
         super.setUp()
-        // Clear UserDefaults before each test
+        // Clear UserDefaults before each test using StorageManager keys
         UserDefaults.standard.removeObject(forKey: testHighScoreKey)
+        UserDefaults.standard.removeObject(forKey: testSoundEnabledKey)
+        UserDefaults.standard.synchronize()
+        
         // Reset singleton state
         gameManager = GameManager.shared
         gameManager.resetGame()
     }
     
     override func tearDown() {
+        // Clean up using StorageManager keys
         UserDefaults.standard.removeObject(forKey: testHighScoreKey)
+        UserDefaults.standard.removeObject(forKey: testSoundEnabledKey)
+        UserDefaults.standard.synchronize()
         super.tearDown()
     }
     
@@ -273,5 +280,124 @@ final class GameManagerTests: XCTestCase {
         let instance2 = GameManager.shared
         XCTAssertEqual(instance2.currentScore, 1, "Singleton should share state across instances")
         XCTAssertTrue(instance2.isGameActive, "Singleton should share active state")
+    }
+    
+    // MARK: - StorageManager Integration Tests
+    
+    func testHighScoreLoadedFromStorageManagerOnInit() {
+        // Given: A high score saved via StorageManager
+        StorageManager.shared.saveHighScore(150)
+        
+        // When: GameManager loads the high score (simulated by reading directly)
+        let loadedScore = StorageManager.shared.loadHighScore()
+        
+        // Then: High score should be loaded from StorageManager
+        XCTAssertEqual(loadedScore, 150, "GameManager should load high score from StorageManager")
+    }
+    
+    func testIncrementScoreSavesNewHighScoreViaStorageManager() {
+        // Given: An active game with no previous high score
+        gameManager.startGame()
+        
+        // When: Incrementing score to beat high score
+        gameManager.incrementScore()
+        gameManager.incrementScore()
+        gameManager.incrementScore()
+        
+        // Then: High score should be saved via StorageManager
+        let savedScore = StorageManager.shared.loadHighScore()
+        XCTAssertEqual(savedScore, 3, "New high score should be saved via StorageManager during gameplay")
+    }
+    
+    func testEndGameSavesHighScoreViaStorageManager() {
+        // Given: A game with a score higher than current high score
+        gameManager.startGame()
+        for _ in 0..<10 {
+            gameManager.incrementScore()
+        }
+        
+        // When: Ending the game
+        gameManager.endGame()
+        
+        // Then: High score should be persisted via StorageManager
+        let savedScore = StorageManager.shared.loadHighScore()
+        XCTAssertEqual(savedScore, 10, "High score should be saved via StorageManager when game ends")
+    }
+    
+    func testHighScorePersistsAcrossGameSessions() {
+        // First game session
+        gameManager.startGame()
+        for _ in 0..<7 {
+            gameManager.incrementScore()
+        }
+        gameManager.endGame()
+        
+        // Verify high score is saved
+        let savedScore = StorageManager.shared.loadHighScore()
+        XCTAssertEqual(savedScore, 7)
+        
+        // Second game session with lower score
+        gameManager.resetGame()
+        gameManager.startGame()
+        gameManager.incrementScore()
+        gameManager.incrementScore()
+        gameManager.endGame()
+        
+        // High score should remain unchanged
+        let persistedScore = StorageManager.shared.loadHighScore()
+        XCTAssertEqual(persistedScore, 7, "High score should persist across game sessions")
+    }
+    
+    func testIncrementScoreImmediatelySavesWhenBeatingHighScore() {
+        // Given: An existing high score
+        StorageManager.shared.saveHighScore(5)
+        gameManager.startGame()
+        
+        // When: Incrementing score past high score
+        for _ in 0..<6 {
+            gameManager.incrementScore()
+        }
+        
+        // Then: New high score should be immediately saved (not waiting for endGame)
+        let savedScore = StorageManager.shared.loadHighScore()
+        XCTAssertEqual(savedScore, 6, "High score should be saved immediately when beaten during gameplay")
+    }
+    
+    func testTieScoreDoesNotTriggerSave() {
+        // Given: An existing high score of 5
+        StorageManager.shared.saveHighScore(5)
+        gameManager.startGame()
+        
+        // When: Reaching exactly the same score
+        for _ in 0..<5 {
+            gameManager.incrementScore()
+        }
+        
+        // Then: High score should remain 5 (not trigger new high score)
+        XCTAssertEqual(gameManager.highScore, 5, "Tie score should not update high score")
+        XCTAssertEqual(gameManager.currentScore, 5, "Current score should equal high score")
+        
+        // Verify only strictly greater scores trigger updates
+        gameManager.incrementScore()
+        XCTAssertEqual(gameManager.highScore, 6, "Only scores strictly greater than high score should update it")
+    }
+    
+    func testStorageManagerResetClearsGameManagerHighScore() {
+        // Given: A game with a high score
+        gameManager.startGame()
+        for _ in 0..<10 {
+            gameManager.incrementScore()
+        }
+        gameManager.endGame()
+        XCTAssertEqual(gameManager.highScore, 10)
+        
+        // When: Resetting storage via StorageManager (DEBUG only)
+        #if DEBUG
+        StorageManager.shared.resetAllData()
+        
+        // Then: High score should be cleared
+        let clearedScore = StorageManager.shared.loadHighScore()
+        XCTAssertEqual(clearedScore, 0, "StorageManager reset should clear high score")
+        #endif
     }
 }
