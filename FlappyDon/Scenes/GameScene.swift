@@ -35,6 +35,8 @@ class GameScene: SKScene {
         let gameOverScene = GameOverScene(size: size, score: score)
         let transition = SKTransition.fade(withDuration: 0.3)
         view?.presentScene(gameOverScene, transition: transition)
+    }
+    
     private func setupBoundaries() {
         let groundHeight: CGFloat = 50
         let ground = SKNode()
